@@ -1,7 +1,7 @@
 ## Design Notes
 
 ### Design Requirements
-**Materials: ** ABS, PLA, polycarbonate. Aluminum, stainless, Ti. Can't use Fe (obviously), copper, brass or bronze. For lines, assume Dyneema.
+**Materials:** ABS, PLA, polycarbonate. Aluminum, stainless, Ti. Can't use Fe (obviously), copper, brass or bronze. For lines, assume Dyneema.
 
 ## Mechanical Design
 Initial sketches.
@@ -11,7 +11,7 @@ Initial sketches.
 
 ## Electronics and Instrumentation
 ### OBS Sensor
-Current plan: OpenOBS 328.
+Current plan: OpenOBS 328. https://github.com/tedlanghorst/OpenOBS-328
 
 ### Peristaltic Pump
 Looking at this one: https://www.hardware-x.com/article/S2468-0672(20)30024-9/fulltext
