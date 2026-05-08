@@ -1,0 +1,32 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "MultiPoint",
+        "coordinates": [
+          [
+            -21.154,
+            -175.744
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+		    "name": "Single point custom icon",
+		    "sprite": "${DATA}/openspace-icon.png"
+	    },
+      "geometry": {
+        "coordinates": [
+          -64.04189076668845,
+          -19.032784633348527
+        ],
+        "type": "Point"
+      }
+    }
+  ]
+}
