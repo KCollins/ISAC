@@ -4,7 +4,7 @@ gantt
     dateFormat  YYYY-MM-DD
 section Natural Variables
     Nitrogen Fixation Annual Cycle: N, 2026-11-01, 150d
-    Whale Migration: whales, 2026-07-01, 90d
+    Whale Season: whales, 2026-07-01, 90d
 section Meetings and Conferences
     All-Hands Science Discussion: milestone, 2026-07-01, 1d
     All-Hands Science Data Forum: milestone, 2026-10-15, 1d
