@@ -11,7 +11,7 @@ section Meetings and Conferences
     AGU26, San Francisco: 2026-12-07, 5d
 section Field Work
     November cruise (tentative): 2026-11-10, 10d
-    January cruise: 2027-01-30, 10d
+    January cruise: 2027-01-08, 10d
     March cruise: 2027-03-15, 10d
 section Logistics and Milestones
     Thanksgiving 2026: milestone, 2026-11-26
