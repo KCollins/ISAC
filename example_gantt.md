@@ -58,3 +58,4 @@ section ISAC Team
         Write procedure checklist for sensors: sensorprotocol, after chlabuild obsbuild, 2d
         Write procedure checklist for ISAC deployment: protocol, after floattest, 2d
         Pack and Ship Sensors to CA: sensorship, after laketest sensorprotocol, 15d
+        Pack and Ship Ash Dispersal System to CA: ashship, after floattest, 15d
