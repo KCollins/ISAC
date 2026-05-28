@@ -47,7 +47,7 @@ section ISAC Team
         Design fixture for ash dispersal: done, fixturedesign, 2026-05-10, 5d
         Ruggedize fixture: ruggedize, 2026-06-05, 3d
         Implement radio control of ash dispersal: radiofixture, after loraactuate ruggedize, 4d
-        Identify and order float for ash dispersal system:active, floatfind, 2026-06-01, 2d
+        Identify and order float for ash dispersal system:crit, floatfind, 2026-06-01, 2d
         Build ash dispersal float: floatbuild, after floatfind radiofixture, 7d
         Ash dispersal system pool test: ashpool, after floatbuild, 1d
 
