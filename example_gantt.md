@@ -14,7 +14,7 @@ section Field Work
     January cruise: 2027-01-08, 10d
     March cruise: 2027-03-15, 10d
 section Logistics and Milestones
-    Thanksgiving 2026: milestone, 2026-11-26
+    Thanksgiving 2026: milestone, 2026-11-26, 1d
 section ISAC Team
     Purchase LoRaWAN parts:done, lorabuy, 2026-05-15, 5d
     OBS Board Revision: obs, 2026-06-01, 20d
