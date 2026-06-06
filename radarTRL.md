@@ -3,7 +3,7 @@
 title: "Readiness Level"
 ---
 radar-beta
-  axis m["Tunnel"], s["Telemetry"], e["Backscatter"]
+  axis m["Column Drogue"], s["Telemetry"], e["Backscatter"]
   axis h["Chla"], g["Material Dispersal"], a["Automated Sampling"]
   axis t["Visualization Pipeline"]
   curve b["Year 3"]{9, 9, 9, 9, 9, 8, 9}
