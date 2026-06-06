@@ -1,4 +1,4 @@
-'''mermaid
+```mermaid
 ---
 title: "Readiness Level"
 ---
@@ -12,4 +12,4 @@ radar-beta
 
   max 9
   min 0
-'''
+```
