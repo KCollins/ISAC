@@ -1,4 +1,7 @@
 ```mermaid
+---
+displayMode: compact
+---
 gantt
     title Year 1
     dateFormat  YYYY-MM-DD
@@ -17,8 +20,10 @@ section Field Work
     January cruise: 2027-01-08, 10d
     March cruise: 2027-03-15, 10d
 
-section Logistics and Milestones
-    Thanksgiving 2026: milestone, 2026-11-26, 1d
+section Publishing and Reports
+    Milestone A : milestone, m1, 2026-06-10, 1d
+    Milestone B : milestone, sameline m1, 2026-07-12, 1d
+    Milestone C : milestone, sameline m1, 2026-09-15, 1d
 
 section Telemetry
         Purchase LoRaWAN parts:done, lorabuy, 2026-05-15, 5d
@@ -68,4 +73,11 @@ gantt
     Development  :a3, after a2, 4w
     Test  :a4, after a3, 4w
     Demo  :crit, a5, after a4, 1d
+```
+
+```mermaid
+timeline
+    title Repeated Events
+    Period A : Event 1 : Event 2 : Event 3
+    Period B : Event 1 : Event 2
 ```
