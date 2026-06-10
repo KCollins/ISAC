@@ -1,7 +1,5 @@
 ```mermaid
----
-displayMode: compact
----
+
 gantt
     title Year 1
     dateFormat  YYYY-MM-DD
