@@ -179,3 +179,71 @@ flowchart LR
     style Electronic fill:#ADD8E6,stroke:#0116ff,stroke-width:2px
     %% style Sensors fill:#FFFFED,stroke:#dc2676,stroke-width:2px
 ```
+
+```mermaid
+---
+title: ISAC Dependency Graph
+---
+%%{
+  init: {
+    'flowchart': {
+      'nodeSpacing': 10,
+      'rankSpacing': 20,
+      'useMaxWidth': false
+    }
+  }
+}%%
+
+flowchart LR
+    %% Electromechanical (Left)
+    subgraph Electromechanical [Electromechanical Subsystems]
+        E(Automated Water Sampling)
+        F(Automated Ash Dispersal)
+    end
+
+    %% Sensors (Bottom Left/Middle)
+    subgraph Sensors [Environmental Sensors]
+        G(Modular Sensors)
+        H(Integrated Sensors)
+    end
+
+    %% Electronic (Middle/Top)
+    subgraph Electronic [Electronic Subsystems]
+        D(Telemetry)
+        C(Power Bus)
+    end
+
+    %% Structural (Right)
+    subgraph Structural [Structural Components]
+        A(Column Drogue)
+        B(Float)
+    end
+
+    %% System Hierarchy and Flow
+    E --> A
+    E --> C
+    E --> D
+    E --> B
+
+    F --> C
+    F --> D
+
+    D --> C
+    D --> B
+    C --> B
+
+    %% Connecting Sensors cleanly
+    H --> D
+    G --> A
+
+    %% Invisible alignment constraints to keep subgraphs stacked perfectly
+    E ~~~ G
+    D ~~~ C
+    B ~~~ A
+    H ~~~ G
+    
+    %% Styling
+    style Structural fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+    style Electromechanical fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    style Electronic fill:#ADD8E6,stroke:#0116ff,stroke-width:2px
+```
