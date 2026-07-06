@@ -19,6 +19,57 @@ flowchart LR
         A(Column Drogue)
     end
 
+    subgraph Sensors [Sensors]
+        H(Chlorophyll A)
+        G(Backscatter)
+    end
+
+    %% Bundled Connections
+    E --> A & B & C & D
+    F --> C & D
+    D --> C & B
+    C --> B
+    G --> A
+    H --> D
+
+    %% Color & Border Styles
+    style Structural fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+    style Electromechanical fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+    style Electronic fill:#ADD8E6,stroke:#0116ff,stroke-width:2px
+    style Sensors fill:#fffde6,stroke:#FFDB58,stroke-width:2px
+
+    %% Subgraph Title Font Scaling
+    style Electromechanical font-size:16px,font-weight:bold
+    style Electronic font-size:16px,font-weight:bold
+    style Structural font-size:16px,font-weight:bold
+    style Sensors font-size:18px,font-weight:bold
+
+    %% Universal Large Font Styling for Nodes
+    classDef largeFont font-size:20px,font-weight:bold;
+    class A,B,C,D,E,F,G,H largeFont;
+```
+
+```mermaid
+---
+title: ISAC Dependency Graph
+---
+flowchart LR
+    %% Subgraphs
+    subgraph Electromechanical [Electromechanical Subsystems]
+        E(Automated Water Sampling System)
+        F(Automated Ash Dispersal System)
+    end
+
+    subgraph Electronic [Electronic Subsystems]
+        D(Telemetry System)
+        C(Power Bus)
+    end
+
+    subgraph Structural [Structural Components]
+        B(Float)
+        A(Column Drogue)
+    end
+
     subgraph Sensors [Environmental Sensors]
         H(Chlorophyll A)
         G(Backscatter)
