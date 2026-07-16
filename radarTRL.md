@@ -1,0 +1,57 @@
+```mermaid
+---
+title: "Readiness Level"
+---
+radar-beta
+ axis test["Overall system"]
+  axis col["Column Drogue"], f["Float"], p["Power Bus"], t["Telemetry"]
+  axis a["Material Dispersal"], s["Automated Sampling"]
+  axis b["Backscatter"]
+  axis c["Chla"]
+  curve y3["Year 3"]{1, 9, 9, 9, 9, 9, 8, 9, 9}
+  curve y2["Year 2"]{1, 8, 5, 8, 6, 5, 6, 7, 1}
+  curve y1["Year 1"]{1, 8, 3, 6, 2, 3, 2, 4, 1}
+  curve y0["Current RL"]{2, 8, 2, 5, 2, 2, 2, 4, 1}
+
+  max 9
+  min 0
+```
+
+
+
+```mermaid
+---
+title: "Readiness Level"
+---
+radar-beta
+  axis col["Column Drogue"], t["Telemetry"], b["Backscatter"]
+  axis c["Chla"], a["Material Dispersal"], s["Automated Sampling"]
+  axis v["Visualization Pipeline"]
+  curve y3["Year 3"]{9, 9, 9, 9, 9, 8, 9}
+  curve y2["Year 2"]{8, 5, 8, 6, 5, 6,7}
+  curve y1["Year 1"]{8, 3, 6, 2, 3, 2,4}
+  curve y0["Current RL"]{8, 2, 5, 2, 2, 2,4}
+
+  max 9
+  min 0
+```
+
+<img width="2000" height="1527" alt="image" src="https://github.com/user-attachments/assets/b3e099a6-5d36-484a-922e-7daabb820d28" />
+
+
+```mermaid
+---
+title: "Readiness Level"
+---
+radar-beta
+  axis col["Column Drogue"], t["Telemetry"], b["Backscatter"]
+  axis c["Chla"], a["Material Dispersal"], s["Automated Sampling"]
+  axis v["Visualization Pipeline"]
+  curve y3["Year 3"]{9, 9, 9, 9, 9, 8, 9}
+  curve y2["Year 2"]{8, 5, 8, 6, 5, 6,7}
+  curve y1["Year 1"]{8, 3, 6, 2, 3, 2,4}
+  curve y0["Current RL"]{8, 2, 5, 2, 2, 2,4}
+
+  max 9
+  min 0
+```
