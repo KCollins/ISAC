@@ -6,10 +6,11 @@ layout: home
 permalink: 
 ---
 
-Welcome to the ISAC documentation site! Browse the pages linked in the header for information about the project, how to build your own, and how to use the sensors. 
+Welcome to the ISAC documentation site! Browse the pages linked in the header for information about the project, how to build your own, and where we have deployed and tested our prototypes to date.
 
 If you find an error or have a problem with any part of the project, please let us know by [**opening a new issue**](https://github.com/kcollins/ISAC/issues/new). This leaves a public record of outstanding issues and solutions that can help others. 
 
+![image](./assets/images/watercolor.png)
 
 ---
 &nbsp; 
