@@ -2,6 +2,7 @@
 layout: page
 title: Quality, Calibration and Test Procedures
 permalink: /testing/
+mermaid: true
 ---
 
 This page concerns quality, calibration and test procedures for subsystems. *Like ISAC, this page is a work in progress.*
