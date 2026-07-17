@@ -1,14 +1,5 @@
-# ISSC
-Underwater basket weaving.
+# ISAC
+The In-Situ Autonomous Column (ISAC) is a low-cost drifter and sensor platform designed to characterize sinking particles in the surface of aquatic environments.
 
+ISAC is both an observational instrument and an experimental instrument. The ISAC drifter monitors the sinking of particulate matter (e.g., volcanic ash, biological cells/aggregates) through the surface. Passive sensing of the sinking particle field (by backscatter and chlorophyll-a fluorescence optical sensors) and active sampling of seawater for biogeochemical variables allows users of ISAC to test the effects of nutrient supply on phytoplankton populations, survey across biogeochemical gradients (in time and space), experimentally manipulate the particle field, and assess sinking speeds of particulate matter and their contribution to the carbon cycle. These capabilities make ISAC a novel tool for interrogating biogeochemistry in aquatic environments.
 
-
-<iframe src="https://mfr.osf.io/render?url=https%3A%2F%2Fosf.io%2Fdownload%2Fvsj73%2F%3Fdirect%26mode%3Drender"
-        width="100%"
-        scrolling="yes"
-        height="677px"
-        marginheight="0"
-        frameborder="0"
-        allowfullscreen
-        webkitallowfullscreen
->
