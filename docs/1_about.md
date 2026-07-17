@@ -2,11 +2,12 @@
 layout: page
 title: About
 permalink: /about/
+mermaid: true
 ---
 
 The In-Situ Autonomous Column (ISAC) is a low-cost drifter and sensor platform designed to characterize sinking particles in the surface of aquatic environments. 
 
-**ISAC is currently under development.** For deployments to date, see 
+**ISAC is currently under development.** For a list of deployments to date, see "Data."
 
 
 ## Planned Improvements
