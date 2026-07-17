@@ -20,7 +20,7 @@ This guide covers build steps for component parts
 
 ![image](./assets/images/removespring.jpeg)
 
-* **Remove grommets:** There are also nylon webbing pieces with metal grommets, which have to be removed since the system is measuring trace metals. Cut these webbing pieces off and singe the ends to 
+* **Remove grommets:** There are also nylon webbing pieces with metal grommets, which have to be removed since the system is measuring trace metals. Cut these webbing pieces off and singe the ends to prevent fraying.
 
 ### Sew tunnel webbing
 Nylon webbing loops are assembled as shown below. To prepare a loop, cut 5-7 inches of nylon webbing and singe the edges with a lighter to prevent fraying. Fold and pin both ends of the webbing as shown, with the two pins pointing in the same direction. Fold in half and add a third pin between the two layers, above the fold. The loop can then be sewn to the tunnel using polyester thread.
