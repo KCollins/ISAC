@@ -1,0 +1,22 @@
+<!-- _includes/mermaid.html -->
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  mermaid.initialize({ startOnLoad: true });
+
+  // Dynamically find and style standard Markdown code blocks for Mermaid
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll('pre > code.language-mermaid').forEach((codeBlock) => {
+      const preElement = codeBlock.parentElement;
+      const diagramText = codeBlock.textContent;
+      
+      // Create a div container that Mermaid can target
+      const outputDiv = document.createElement('div');
+      outputDiv.className = 'mermaid';
+      outputDiv.textContent = diagramText;
+      
+      // Replace the old code structure with the new renderable div
+      preElement.setView = function(){}; 
+      preElement.parentNode.replaceChild(outputDiv, preElement);
+    });
+  });
+</script>
