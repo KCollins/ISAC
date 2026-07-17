@@ -12,10 +12,11 @@ ISAC is both an observational instrument and an experimental instrument. The ISA
  * [Kristina Collins](https://orcid.org/0000-0002-3816-1948), Space Science Institute
 
 ### Manufacturing Collaborators
- * Ben Kaufman: 3D printing, design support
- * Mike Hawley: Sewing
+ * [Ben Kaufman](https://orcid.org/0009-0005-3339-7686): 3D printing, design support
+ * [Mike Hawley](https://orcid.org/0009-0007-5088-750X): Sewing
 
 ### Acknowledgments
 Seed funding for this project was provided by [Growing Oceans](www.growingoceans.com). 
-<!-- Sewing consultation was provided by [Capital Quilts](https://www.capitalquilts.com). 
-Our muse is [Oreo the Cat](https://github.com/KCollins/ISAC/blob/main/docs/assets/images/Oreo.jpg). --!>
+<!--
+Sewing consultation was provided by [Capital Quilts](https://www.capitalquilts.com). Collaborative opportunities were supported by AGU LANDiNG and [3D Music](https://3dmusic.org/). Our muse is [Oreo the Cat](https://github.com/KCollins/ISAC/blob/main/docs/assets/images/Oreo.jpg). 
+!-->
