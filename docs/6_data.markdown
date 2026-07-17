@@ -18,6 +18,10 @@ See https://www.github.com/kcollins/ISAC for Jupyter notebooks with processing c
 
 **Dates:** March 2026
 
+**ISAC Version Description:** Drogue with 2 OpenOBS sensors.
+
+**Deployment Goal:** Drogue test, initial ash experiment.
+
 **Data:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21200628.svg)](https://doi.org/10.5281/zenodo.21200628)
 
 **Analysis:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21253933.svg)](https://doi.org/10.5281/zenodo.21253933)
