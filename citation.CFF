@@ -1,12 +1,18 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 authors:
-- family-names: "Collins"
-  given-names: "Kristina"
-  orcid: "https://orcid.org/0000-0002-3816-1948"
 - family-names: "Forsch"
   given-names: "Kiefer"
   orcid: "https://orcid.org/0000-0003-1076-164X"
+- family-names: "Collins"
+  given-names: "Kristina"
+  orcid: "https://orcid.org/0000-0002-3816-1948"
+- family-names: "Kaufman"
+  given-names: "Ben"
+  orcid: "0009-0005-3339-7686"
+- family-names: "Hawley"
+  given-names: "Michael"
+  orcid: "https://orcid.org/0009-0007-5088-750X"
 title: "ISAC"
 version: 1.0.0
 // doi: 10.5281/zenodo.1234
