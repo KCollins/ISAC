@@ -48,6 +48,6 @@ See the [OpenOBS-328 documentation page](https://tedlanghorst.github.io/OpenOBS-
 
 * **Color-coding:** The logger boards are serialized, with 3-digit serial numbers encoded in EEPROM and physically written on the boards. To make the sensors easy to identify just by looking at the housing, we used colored electrical tape and encoded these serial numbers using the [5-band resistor color code,](https://neurophysics.ucsd.edu/courses/physics_120/resistorcharts.pdf), with the tolerance band used to denote different sensor types (VCNL4010 vs VCNL4040, e.g.).
 
-<img src="./assets/images/colorcode.jpeg" alt="Description" style="transform: rotate(-90deg);" />
+![image](./assets/images/colorcode.jpeg)
 
 * **Modified endcaps:** The endcaps in the original design use automotive plugs. An alterative approach is to replace these with threaded inserts, which are tightened using a strap wrench.
