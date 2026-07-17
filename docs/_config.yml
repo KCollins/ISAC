@@ -21,7 +21,7 @@
 title: ISAC
 description: >- # this means to ignore newlines until "baseurl:"
   The In-Situ Autonomous Column is a low-cost drifter and sensor platform designed to characterize sinking particles in the surface ocean
-baseurl: "/ISAC-docs/" # the subpath of your site, e.g. /blog
+baseurl: "/ISAC/" # the subpath of your site, e.g. /blog
 domain: kcollins.github.io
 url: "https://kcollins.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 
