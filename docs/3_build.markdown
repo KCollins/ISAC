@@ -46,8 +46,8 @@ Once the loops are added, the drogue can be folded up and placed back in the bag
 ### OpenOBS-328 Assembly
 See the [OpenOBS-328 documentation page](https://tedlanghorst.github.io/OpenOBS-328/) for general information on constructing the OpenOBS-328 units.
 
-* **Color-coding:** The logger boards are serialized, with 3-digit serial numbers encoded in EEPROM and physically written on the boards. To make the sensors easy to identify just by looking at the housing, we used colored electrical tape and encoded these serial numbers using the [5-band resistor color code,](https://neurophysics.ucsd.edu/courses/physics_120/resistorcharts.pdf), with the tolerance band used to denote different 
+* **Color-coding:** The logger boards are serialized, with 3-digit serial numbers encoded in EEPROM and physically written on the boards. To make the sensors easy to identify just by looking at the housing, we used colored electrical tape and encoded these serial numbers using the [5-band resistor color code,](https://neurophysics.ucsd.edu/courses/physics_120/resistorcharts.pdf), with the tolerance band used to denote different sensors.
 
-![image](./assets/images/colorcode.jpeg)
+<img src="./assets/images/colorcode.jpeg" alt="Description" style="transform: rotate(-90deg);" />
 
 * **Modified endcaps:** The endcaps in the original design use automotive plugs. An alterative approach is to replace these with threaded inserts, which are tightened using a strap wrench.
