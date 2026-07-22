@@ -18,6 +18,7 @@ The parts cost of ISAC varies based on how many modules you're installing. This 
 ### Drogue
 * [Sewing machine](https://case.edu/thinkbox/equipment/other-equipment/sewing-machine) 
 * Scissors
+* Sharpie (black)
 * Large area for layout
 * Lighter
 
