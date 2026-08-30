@@ -17,6 +17,20 @@ This page contains deployment protocols.
 * TOC
 {:toc}
 
+## Packing Checklist
+### Tools for Drogue
+- [ ] Line (Dyneema recommended)
+- [ ] ***(3D printed blocks?)***
+### Tools for OBS sensors
+- [ ] USB to micro-USB cable
+- [ ] USB-A to USB-C cable
+- [ ] 3.6V battery in AA form factor, one for each sensor (bring extras)
+- [ ] micro SD card, one for each sensor
+- [ ] micro SD card reader
+- [ ] charger for 3.6V batteries
+- [ ] crescent wrench (if using automotive plugs)
+- [ ] strap wrench
+
 ## Sensor Checklist
 - [ ] Remove cap with strap wrench
 - [ ] Check battery voltage
