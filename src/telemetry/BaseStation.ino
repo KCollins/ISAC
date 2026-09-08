@@ -65,8 +65,10 @@ void setup() {
   display.setRotation(1);
   display.setTextSize(1);
   display.setTextColor(SH110X_WHITE);
+  display.println("Hello, Kiefer!");
   display.println("Base Station Ready");
   display.println("Range Test Mode");
+  delay(50000);
   display.display();
 
   // Reset RFM95 Radio
@@ -123,16 +125,16 @@ void loop() {
       // Determine ACK response color
       uint8_t responseColor = 0;
       if (overrideBlue) {
-        responseColor = 255; // 255 reserved for Manual Blue Override
+        responseColor = 3; // 3 = BLUE
       } else {
-        // Step through 256 spectrum positions based on Message ID
-        responseColor = (uint8_t)((packet.msgId * 15) % 256);
+        // Toggle based on packet ID sequence: Even = Red (1), Odd = Green (2)
+        responseColor = (packet.msgId % 2 == 0) ? 1 : 2;
       }
 
       // Build ACK response
       BaseResponse response;
       response.msgId = packet.msgId;
-      response.ledColorState = responseColor; // Holds 0-255 wheel position
+      response.ledColorState = responseColor;
 
       // CRITICAL PAUSE: Allow Field Station hardware to switch to RX mode
       delay(50);
