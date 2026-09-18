@@ -54,6 +54,11 @@ Once the loops are added, the drogue can be folded up and placed back in the bag
 ### OpenOBS-328 Assembly
 See the [OpenOBS-328 documentation page](https://tedlanghorst.github.io/OpenOBS-328/) for general information on constructing the OpenOBS-328 units. Adjustments and notes are discussed below.
 
+* **Sensor head design:** Sensor heads should be printed in PETG. The OpenOBS-328 is designed and validated with the [VCNL4010](https://cdn-shop.adafruit.com/product-files/466/vcnl4010.pdf), which is now considered deprecated, but we were able to get enough [Adafruit carrier boards](https://www.adafruit.com/product/466?srsltid=AU7gw4XNDA02P71WcM21knHilKXrwljO19kkNDAFOyVrtqp8HpFlZwPN) for a couple of rounds. Use [this sensor head](../hardware/SensorCapV11.stl) for the 4010 carrier board, or [this one](../hardware/SensorCapV17.stl) for later boards (the VCNL4020, 4030, 4040 and 4200 all use the same form factor).
+
+> [!Warning]
+> At the time of writing, Adafruit is no longer carrying the VCNL4010 boards. We're working on validating later sensors in the series as a replacement. You can read more [here](https://github.com/tedlanghorst/OpenOBS-328/issues/10).
+
 * **Color-coding:** The logger boards are serialized, with 3-digit serial numbers encoded in EEPROM and physically written on the boards. To make the sensors easy to identify just by looking at the housing, we used colored electrical tape and encoded these serial numbers using the [5-band resistor color code,](https://neurophysics.ucsd.edu/courses/physics_120/resistorcharts.pdf), with the tolerance band used to denote different sensor types (VCNL4010 vs VCNL4040, e.g.).
 
 ![image](./assets/images/colorcode.jpeg)
