@@ -21,4 +21,4 @@ See https://www.github.com/kcollins/ISAC for Jupyter notebooks with processing c
 
 ## Visualizations
 We use [OpenSpace](www.openspaceproject.com) to create integrated ISAC visualizations. Code, instructions and demo videos can be found here: [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21310482.svg)](https://doi.org/10.5281/zenodo.21310482)
-<iframe width="1870" height="750" src="https://www.youtube.com/embed/Si8AKwayehU?list=PLTvFnCylkeSBzXo7BVH0SzxiXEjGLZG2X" title="ISAC2, ISAC3, Volcano 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="700" height="750" src="https://www.youtube.com/embed/Si8AKwayehU?list=PLTvFnCylkeSBzXo7BVH0SzxiXEjGLZG2X" title="ISAC2, ISAC3, Volcano 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
