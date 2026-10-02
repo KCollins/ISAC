@@ -14,7 +14,7 @@ See https://www.github.com/kcollins/ISAC for Jupyter notebooks with processing c
 
 ## Deployments
 
-| **Cruise** | **Dates** | **Vessel** | **ISAC Version Description** | **Deployment Goals** | **Data** | **Analysis** | 
+| **Cruise** | **Dates** | **Vessel** | **ISAC Version Description** | **Deployment Goals** | **Datasets** | **Analysis** | 
 |------------|-----------|------------|------------------------------|----------------------|----------|--------------|
 | PACSUN2603 | March 2026 | [*F/V Pacific Sunrise*](https://vessels.wcpfc.int/vessel/4073)|  Drogue with 2 OpenOBS sensors.  |  Drogue test, initial ash experiment. | [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21200628.svg)](https://doi.org/10.5281/zenodo.21200628)| [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.21253933.svg)](https://doi.org/10.5281/zenodo.21253933)                  
 | PACSUN2611 |  November 2026  |            | Drogue with 5 OpenOBS sensors. |    |          |              |                   
