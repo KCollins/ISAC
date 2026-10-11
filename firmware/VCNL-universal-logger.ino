@@ -26,13 +26,16 @@ const unsigned long LOG_INTERVAL = 500; // 0.5s cadence
 char rxBuffer[32];
 byte rxIndex = 0;
 
-void writeRegister(uint8_t address, uint8_t reg, uint8_t val) {
+// Write 16-bit word (Low byte then High byte) over I2C
+void writeRegister16(uint8_t address, uint8_t reg, uint16_t val) {
   Wire.beginTransmission(address);
   Wire.write(reg);
-  Wire.write(val);
+  Wire.write(val & 0xFF);        // Low byte
+  Wire.write((val >> 8) & 0xFF); // High byte
   Wire.endTransmission();
 }
 
+// Read 16-bit word (Low byte then High byte) from I2C
 uint16_t readRegister16(uint8_t address, uint8_t reg) {
   Wire.beginTransmission(address);
   Wire.write(reg);
@@ -47,7 +50,7 @@ uint16_t readRegister16(uint8_t address, uint8_t reg) {
 }
 
 void detectAndInitSensor() {
-  // Probe I2C Address 0x13 (VCNL4010 / VCNL4020)
+  // 1. Probe I2C Address 0x13 (VCNL4010 / VCNL4020)
   Wire.beginTransmission(0x13);
   if (Wire.endTransmission() == 0) {
     uint16_t prodId = readRegister16(0x13, 0x81) & 0xFF;
@@ -56,12 +59,12 @@ void detectAndInitSensor() {
     } else {
       detectedModel = MODEL_VCNL4020;
     }
-    writeRegister(0x13, 0x83, 20); // 200mA LED current
-    writeRegister(0x13, 0x80, 0x07); // Periodic measurement mode
+    writeRegister16(0x13, 0x83, 20);   // 200mA LED current
+    writeRegister16(0x13, 0x80, 0x07); // Enable periodic ALS & PS
     return;
   }
 
-  // Probe I2C Address 0x60 (VCNL4030 / VCNL4040)
+  // 2. Probe I2C Address 0x60 (VCNL4030 / VCNL4040)
   Wire.beginTransmission(0x60);
   if (Wire.endTransmission() == 0) {
     uint16_t idReg = readRegister16(0x60, 0x0C) & 0xFF;
@@ -70,8 +73,10 @@ void detectAndInitSensor() {
     } else {
       detectedModel = MODEL_VCNL4030;
     }
-    writeRegister(0x60, 0x03, 0x00); // Clear PS shutdown
-    writeRegister(0x60, 0x00, 0x00); // Clear ALS shutdown
+    
+    // VCNL4030/4040 Init: Write 16-bit 0x0000 to enable PS, ALS, and WHITE channels
+    writeRegister16(0x60, 0x03, 0x0000); // Clear PS_SD (Power on Proximity)
+    writeRegister16(0x60, 0x00, 0x0000); // Clear ALS_SD & WHITE_SD (Power on ALS + White)
     return;
   }
 
@@ -98,7 +103,6 @@ void getSerialNumber() {
 }
 
 void sendDeviceInfo() {
-  // Format: ACK_SN:<SN>,<MODEL_NAME>
   Serial.print(F("ACK_SN:"));
   Serial.print(serialNumber);
   Serial.print(F(","));
@@ -110,7 +114,6 @@ void createLogFile() {
   uint16_t fileIndex = 1;
   uint8_t sensorCode = (uint8_t)detectedModel;
 
-  // Format: <SN>_<SensorCode><Index>.CSV (e.g., 150_3001.CSV)
   while (fileIndex < 999) {
     snprintf(filename, sizeof(filename), "%u_%u%03u.CSV", serialNumber, sensorCode, fileIndex);
     if (!sd.exists(filename)) {
@@ -130,7 +133,6 @@ void createLogFile() {
     }
     fileCreated = true;
 
-    // Send ACK with Epoch, Filename, and Sensor Type
     Serial.print(F("ACK_SYNC:"));
     Serial.print(startEpoch);
     Serial.print(F(","));
@@ -183,7 +185,7 @@ void setup() {
   if (!sd.begin(SD_CS_PIN, SD_SCK_MHZ(4))) {
     Serial.println(F("MSG: SD Card Init Failed!"));
   } else {
-    Serial.println(F("MSG: SD Card Initialized.")); // Fixed: Uses println
+    Serial.println(F("MSG: SD Card Initialized."));
   }
 
   sendDeviceInfo();
@@ -198,51 +200,54 @@ void loop() {
 
     uint32_t currentEpoch = timeSynced ? (startEpoch + ((currentMillis - startMillis) / 1000)) : 0;
 
-    uint16_t prox = 0, ch2 = 0, als = 0, white = 0;
+    uint16_t prox = 0, als = 0, white = 0;
+    float lux = 0.0;
 
     if (detectedModel == MODEL_VCNL4010 || detectedModel == MODEL_VCNL4020) {
       prox = readRegister16(0x13, 0x87);
-      ch2  = readRegister16(0x13, 0x85);
+      als  = readRegister16(0x13, 0x85);
+      lux  = als; // Raw ALS counts
     } else if (detectedModel == MODEL_VCNL4030) {
-      prox = readRegister16(0x60, 0x08);
-      ch2  = readRegister16(0x60, 0x0B);
-      als  = readRegister16(0x60, 0x0A);
-      white= readRegister16(0x60, 0x0C);
+      prox  = readRegister16(0x60, 0x08); // PS_DATA
+      als   = readRegister16(0x60, 0x0B); // ALS_DATA
+      white = readRegister16(0x60, 0x0C); // WHITE_DATA
+      lux   = als * 0.0536;               // VCNL4030 Lux scale factor (80ms IT)
     } else if (detectedModel == MODEL_VCNL4040) {
-      prox = readRegister16(0x60, 0x08);
-      ch2  = readRegister16(0x60, 0x09);
-      white= readRegister16(0x60, 0x0A);
+      prox  = readRegister16(0x60, 0x08); // PS_DATA
+      als   = readRegister16(0x60, 0x09); // ALS_DATA
+      white = readRegister16(0x60, 0x0A); // WHITE_DATA
+      lux   = als * 0.1000;               // VCNL4040 Lux scale factor
     }
 
-    // Stream CSV over Serial
+    // Stream CSV line over Serial
     Serial.print(currentEpoch); Serial.print(',');
     Serial.print(currentMillis); Serial.print(',');
     Serial.print(modelNames[detectedModel]); Serial.print(',');
     Serial.print(prox); Serial.print(',');
     if (detectedModel == MODEL_VCNL4010 || detectedModel == MODEL_VCNL4020) {
-      Serial.println(ch2);
+      Serial.println(als);
     } else {
-      Serial.print(ch2); Serial.print(',');
+      Serial.print(lux, 2); Serial.print(',');
       Serial.print(als); Serial.print(',');
       Serial.println(white);
     }
 
-    // Write CSV row to SD card file
+    // Append CSV line to SD file
     if (fileCreated && csvFile.isOpen()) {
       csvFile.print(currentEpoch); csvFile.print(',');
       csvFile.print(currentMillis); csvFile.print(',');
       csvFile.print(modelNames[detectedModel]); csvFile.print(',');
       csvFile.print(prox); csvFile.print(',');
       if (detectedModel == MODEL_VCNL4010 || detectedModel == MODEL_VCNL4020) {
-        csvFile.println(ch2);
+        csvFile.println(als);
       } else {
-        csvFile.print(ch2); csvFile.print(',');
+        csvFile.print(lux, 2); csvFile.print(',');
         csvFile.print(als); csvFile.print(',');
         csvFile.println(white);
       }
       
       static byte flushCounter = 0;
-      if (++flushCounter >= 10) {
+      if (++flushCounter >= 10) { // Flush every 5 seconds
         csvFile.flush();
         flushCounter = 0;
       }
