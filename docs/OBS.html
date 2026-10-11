@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>OpenOBS-328 VCNL4030 Deployment Tool</title>
+  <title>OpenOBS Universal Sensor Deployment Tool</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body { font-family: system-ui, sans-serif; margin: 20px; max-width: 950px; background: #f8f9fa; }
@@ -11,6 +11,7 @@
     #syncBtn { background: #28a745; color: white; border: none; }
     #syncBtn:disabled { background: #ccc; cursor: not-allowed; }
     .badge { padding: 8px 14px; border-radius: 5px; font-weight: bold; background: #e9ecef; font-size: 13px; }
+    .sensor-badge { background: #e2e3e5; color: #383d41; border: 1px solid #d6d8db; }
     .synced { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
     .time-banner { background: #e7f1ff; color: #084298; border: 1px solid #b6d4fe; padding: 10px 14px; border-radius: 6px; font-weight: bold; font-size: 15px; margin-bottom: 15px; display: flex; justify-content: space-between; }
     .chart-box { height: 350px; background: white; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6; margin-bottom: 15px; }
@@ -19,12 +20,13 @@
 </head>
 <body>
 
-  <h2>OpenOBS-328 VCNL4030 Deployment Tool</h2>
+  <h2>OpenOBS Universal Sensor Deployment Tool</h2>
 
   <div class="status-bar">
     <button id="connectBtn" onclick="toggleConnection()">1. Connect Serial</button>
     <button id="syncBtn" onclick="syncTime()" disabled>2. Sync Time & Start Log File</button>
     <span id="snBadge" class="badge">SN: Unknown</span>
+    <span id="sensorBadge" class="badge sensor-badge">Sensor: Detecting...</span>
     <span id="fileBadge" class="badge">File: Not Created</span>
   </div>
 
@@ -38,11 +40,12 @@
   </div>
 
   <h3>Serial Log</h3>
-  <div id="terminal">Click "Connect Serial" to pair with OpenOBS-328 board...</div>
+  <div id="terminal">Click "Connect Serial" to pair with OpenOBS logger board...</div>
 
   <script>
     let port, reader, isConnected = false;
     let serialNumber = "Unknown";
+    let sensorModel = "Unknown";
     let activeStartEpoch = 0;
     let syncTimeLocal = 0;
     let clockInterval = null;
@@ -65,11 +68,11 @@
             fill: false
           },
           {
-            label: 'Lux (lx)',
+            label: 'Light / Lux',
             data: [],
             borderColor: '#0d6efd',
             backgroundColor: '#0d6efd',
-            yAxisID: 'yLux',
+            yAxisID: 'yLight',
             borderWidth: 2,
             pointRadius: 2,
             tension: 0.2,
@@ -83,21 +86,8 @@
         animation: false,
         scales: {
           x: { display: true, title: { display: true, text: 'Time (UTC)' } },
-          yProx: { 
-            type: 'linear', 
-            display: true, 
-            position: 'left', 
-            title: { display: true, text: 'Proximity (Counts)' },
-            suggestedMin: 0
-          },
-          yLux: { 
-            type: 'linear', 
-            display: true, 
-            position: 'right', 
-            title: { display: true, text: 'Lux (lx)' }, 
-            grid: { drawOnChartArea: false },
-            suggestedMin: 0
-          }
+          yProx: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'Proximity (Counts)' }, suggestedMin: 0 },
+          yLight: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'Light Level / Lux' }, grid: { drawOnChartArea: false }, suggestedMin: 0 }
         }
       }
     });
@@ -114,10 +104,8 @@
         document.getElementById('syncBtn').disabled = false;
         logTerminal("Serial port connected at 57600 baud. Waiting for board boot...");
 
-        // 1. Start listening to incoming serial stream immediately
         readSerialLoop();
 
-        // 2. Wait 1.5s for MCU boot sequence to finish before requesting SN
         setTimeout(async () => {
           if (serialNumber === "Unknown") {
             await sendSerialCommand("GET_SN\n");
@@ -150,38 +138,47 @@
       }
     }
 
-    function triggerSyncUI(epoch, activeFileName) {
-      activeStartEpoch = epoch;
-      syncTimeLocal = Date.now();
-      
-      const fileBadge = document.getElementById('fileBadge');
-      fileBadge.innerText = `File: ${activeFileName}`;
-      fileBadge.classList.add('synced');
-
-      chart.data.labels = [];
-      chart.data.datasets[0].data = [];
-      chart.data.datasets[1].data = [];
-      chart.update('none');
-
-      startLiveClock();
-    }
-
     function processLine(line) {
       if (line.startsWith("ACK_SN:")) {
-        serialNumber = line.split(":")[1];
+        const payload = line.substring(7); // Remove "ACK_SN:"
+        const parts = payload.split(',');  // ["150", "VCNL4030"]
+        serialNumber = parts[0];
         document.getElementById('snBadge').innerText = `SN: ${serialNumber}`;
-        logTerminal(`Board Serial Number: ${serialNumber}`);
+
+        if (parts.length > 1) {
+          sensorModel = parts[1];
+          document.getElementById('sensorBadge').innerText = `Sensor: ${sensorModel}`;
+          chart.data.datasets[1].label = (sensorModel === "VCNL4010" || sensorModel === "VCNL4020") ? "Ambient Light" : "Lux";
+        }
+        logTerminal(`Board Info -> SN: ${serialNumber}, Sensor: ${sensorModel}`);
         return;
       }
 
       if (line.startsWith("ACK_SYNC:")) {
-        const payload = line.split(":")[1];
+        const payload = line.substring(9); // Remove "ACK_SYNC:"
         const parts = payload.split(',');
         const epoch = parseInt(parts[0]);
-        const activeFileName = parts.length > 1 ? parts[1] : 'Created';
+        const fileName = parts.length > 1 ? parts[1] : 'Active';
 
-        triggerSyncUI(epoch, activeFileName);
-        logTerminal(`-> Board Confirmed Sync (${epoch}). Active File: ${activeFileName}`);
+        if (parts.length > 2) {
+          sensorModel = parts[2];
+          document.getElementById('sensorBadge').innerText = `Sensor: ${sensorModel}`;
+        }
+
+        activeStartEpoch = epoch;
+        syncTimeLocal = Date.now();
+
+        const fileBadge = document.getElementById('fileBadge');
+        fileBadge.innerText = `File: ${fileName}`;
+        fileBadge.classList.add('synced');
+
+        chart.data.labels = [];
+        chart.data.datasets[0].data = [];
+        chart.data.datasets[1].data = [];
+        chart.update('none');
+
+        startLiveClock();
+        logTerminal(`-> Board Synced (${epoch}). Created File: ${fileName}`);
         return;
       }
 
@@ -190,21 +187,21 @@
         return;
       }
 
-      // Parse CSV Row: timestamp, millis, proximity, lux, als, white
+      // Parse CSV Data Row: timestamp, millis, sensor_type, proximity, light, ...
       const parts = line.split(',');
-      if (parts.length >= 4) {
+      if (parts.length >= 5) {
         const epoch = parseInt(parts[0]);
-        const prox = parseFloat(parts[2]); // Column 2 is Proximity
-        const lux = parseFloat(parts[3]);  // Column 3 is Lux
+        const prox = parseFloat(parts[3]);
+        const light = parseFloat(parts[4]);
 
-        if (!isNaN(prox) && !isNaN(lux)) {
+        if (!isNaN(prox) && !isNaN(light)) {
           const timeLabel = epoch > 1000000000 
             ? new Date(epoch * 1000).toLocaleTimeString('en-US', { timeZone: 'UTC' }) + ' UTC'
             : 'Unsynced';
 
           chart.data.labels.push(timeLabel);
           chart.data.datasets[0].data.push(prox);
-          chart.data.datasets[1].data.push(lux);
+          chart.data.datasets[1].data.push(light);
 
           if (chart.data.labels.length > 40) {
             chart.data.labels.shift();
