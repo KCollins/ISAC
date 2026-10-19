@@ -17,11 +17,14 @@ This page contains deployment protocols.
 * TOC
 {:toc}
 
-## Packing Checklist
-### Tools for Drogue
+## Before You Leave
+- [X] Burn [this sketch](https://github.com/KCollins/ISAC/blob/main/firmware/VCNL-universal-logger.ino) onto your logger boards.
+- [ ] Download a local copy of the html file at https://kcollins.github.io/ISAC/OBS.html. Open it in a Chrome-based browser and verify that you can connect to a sensor.
+### Packing Checklist
+#### Tools for Drogue
 - [ ] Line (Dyneema recommended)
 - [ ] ***(3D printed blocks?)***
-### Tools for OBS sensors
+#### Tools for OBS sensors
 - [ ] USB to micro-USB cable
 - [ ] USB-A to USB-C cable
 - [ ] 3.6V battery in AA form factor, one for each sensor (bring extras)
@@ -30,14 +33,7 @@ This page contains deployment protocols.
 - [ ] charger for 3.6V batteries
 - [ ] crescent wrench (if using automotive plugs)
 - [ ] strap wrench
-
-## Sensor Checklist
-- [ ] Remove cap with strap wrench
-- [ ] Check battery voltage
-- [ ] Connect to computer via USB
-- [ ] Program OpenOBS.ino
-- [ ] Replace cap, tighten with strap wrench
-- [ ] Record sensor ID. column placement, and time
+- [ ] ***(3D printed wrench)***
 
 ## Drogue Deployment Protocol
 ### Deployment
