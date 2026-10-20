@@ -62,7 +62,9 @@
           <option value="50" selected>50 mA (Default)</option>
           <option value="70">70 mA</option>
           <option value="100">100 mA</option>
+          <option value="120">120 mA</option>
           <option value="140">140 mA</option>
+          <option value="160">160 mA</option>
           <option value="180">180 mA</option>
           <option value="200">200 mA</option>
         </select>
@@ -132,6 +134,91 @@
       }
     });
 
+    function updateSensorOptions(model) {
+      const ledSelect = document.getElementById('ledSelect');
+      const cadenceSelect = document.getElementById('cadenceSelect');
+
+      const prevLed = ledSelect.value;
+      const prevCadence = cadenceSelect.value;
+
+      const isVcnl4030Or4040 = (model === "VCNL4030" || model === "VCNL4040");
+
+      // 1. Configure LED Current Options
+      let ledOptions = [];
+      if (isVcnl4030Or4040) {
+        // VCNL4030/4040 PS_MS register supports discrete steps: 50, 70, 100, 120, 140, 160, 180, 200 mA
+        ledOptions = [
+          { val: "50", text: "50 mA (Default)" },
+          { val: "70", text: "70 mA" },
+          { val: "100", text: "100 mA" },
+          { val: "120", text: "120 mA" },
+          { val: "140", text: "140 mA" },
+          { val: "160", text: "160 mA" },
+          { val: "180", text: "180 mA" },
+          { val: "200", text: "200 mA" }
+        ];
+      } else {
+        // VCNL4010/4020 (or default) supports 10 mA step resolution (10-200 mA)
+        ledOptions = [
+          { val: "10", text: "10 mA" },
+          { val: "20", text: "20 mA" },
+          { val: "40", text: "40 mA" },
+          { val: "50", text: "50 mA (Default)" },
+          { val: "70", text: "70 mA" },
+          { val: "100", text: "100 mA" },
+          { val: "120", text: "120 mA" },
+          { val: "140", text: "140 mA" },
+          { val: "160", text: "160 mA" },
+          { val: "180", text: "180 mA" },
+          { val: "200", text: "200 mA" }
+        ];
+      }
+
+      ledSelect.innerHTML = '';
+      ledOptions.forEach(opt => {
+        const el = document.createElement('option');
+        el.value = opt.val;
+        el.textContent = opt.text;
+        ledSelect.appendChild(el);
+      });
+      ledSelect.value = ledOptions.some(o => o.val === prevLed) ? prevLed : "50";
+
+      // 2. Configure Cadence Options
+      let cadenceOptions = [];
+      if (isVcnl4030Or4040) {
+        // High-speed non-blocking background registers permit higher rates (20ms/50Hz and 50ms/20Hz)
+        cadenceOptions = [
+          { val: "20", text: "20 ms (50 Hz)" },
+          { val: "50", text: "50 ms (20 Hz)" },
+          { val: "100", text: "100 ms (10 Hz)" },
+          { val: "200", text: "200 ms (5 Hz)" },
+          { val: "500", text: "500 ms (2 Hz)" },
+          { val: "1000", text: "1000 ms (1 Hz)" },
+          { val: "2000", text: "2000 ms (0.5 Hz)" },
+          { val: "5000", text: "5000 ms (0.2 Hz)" }
+        ];
+      } else {
+        // VCNL4010/4020 sequential polling requires delay for integration; minimum 100 ms
+        cadenceOptions = [
+          { val: "100", text: "100 ms (10 Hz)" },
+          { val: "200", text: "200 ms (5 Hz)" },
+          { val: "500", text: "500 ms (2 Hz)" },
+          { val: "1000", text: "1000 ms (1 Hz)" },
+          { val: "2000", text: "2000 ms (0.5 Hz)" },
+          { val: "5000", text: "5000 ms (0.2 Hz)" }
+        ];
+      }
+
+      cadenceSelect.innerHTML = '';
+      cadenceOptions.forEach(opt => {
+        const el = document.createElement('option');
+        el.value = opt.val;
+        el.textContent = opt.text;
+        cadenceSelect.appendChild(el);
+      });
+      cadenceSelect.value = cadenceOptions.some(o => o.val === prevCadence) ? prevCadence : "100";
+    }
+
     async function toggleConnection() {
       if (isConnected) { disconnect(); return; }
 
@@ -189,6 +276,7 @@
           sensorModel = parts[1];
           document.getElementById('sensorBadge').innerText = `Sensor: ${sensorModel}`;
           chart.data.datasets[1].label = (sensorModel === "VCNL4010" || sensorModel === "VCNL4020") ? "Ambient Light" : "Lux";
+          updateSensorOptions(sensorModel);
         }
         logTerminal(`Board Info -> SN: ${serialNumber}, Sensor: ${sensorModel}`);
         return;
@@ -209,6 +297,7 @@
         if (parts.length > 2) {
           sensorModel = parts[2];
           document.getElementById('sensorBadge').innerText = `Sensor: ${sensorModel}`;
+          updateSensorOptions(sensorModel);
         }
 
         activeStartEpoch = epoch;
