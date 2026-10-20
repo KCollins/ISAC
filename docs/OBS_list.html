@@ -53,9 +53,9 @@ title: Sensor Inventory
     font-size: 0.85em;
     font-weight: 600;
   }
-  .badge-active { background-color: #dafbe1; color: #1a7f37; border: 1px solid #4ac26b; }
+  .badge-working { background-color: #dafbe1; color: #1a7f37; border: 1px solid #4ac26b; }
   .badge-maintenance { background-color: #fff8c5; color: #9a6700; border: 1px solid #d4a72c; }
-  .badge-offline { background-color: #ffebe9; color: #cf222e; border: 1px solid #ff8182; }
+  .badge-broken { background-color: #ffebe9; color: #cf222e; border: 1px solid #ff8182; }
   .badge-testing { background-color: #ddf4ff; color: #0969da; border: 1px solid #54aeff; }
   .badge-default { background-color: #f3f4f6; color: #57606a; border: 1px solid #d0d7de; }
 
@@ -108,12 +108,12 @@ title: Sensor Inventory
         <td>{{ sensor.location }}</td>
         <td>
           {% assign status_lower = sensor.status | downcase %}
-          {% if status_lower == 'active' %}
-            <span class="badge badge-active">Active</span>
+          {% if status_lower == 'Working' %}
+            <span class="badge badge-working">Working</span>
           {% elsif status_lower == 'maintenance' %}
             <span class="badge badge-maintenance">Maintenance</span>
-          {% elsif status_lower == 'offline' %}
-            <span class="badge badge-offline">Offline</span>
+          {% elsif status_lower == 'broken' %}
+            <span class="badge badge-broken">Broken</span>
           {% elsif status_lower == 'testing' %}
             <span class="badge badge-testing">Testing</span>
           {% else %}
