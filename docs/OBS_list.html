@@ -69,7 +69,7 @@ title: Sensor Inventory
 <div class="sensor-tracker-container">
   <h2>Sensor Inventory Tracker</h2>
   
-  <!-- Interactive Dropdown Filters -->
+  <!-- Dropdown Filters -->
   <div class="filter-bar">
     <div class="filter-group">
       <label for="filter-status">Status</label>
@@ -103,18 +103,24 @@ title: Sensor Inventory
     </thead>
     <tbody>
       {% for sensor in site.data.sensors %}
+        {% assign raw_status = sensor.status | default: sensor.Status %}
+        {% assign raw_board = sensor.board | default: sensor.Board %}
+        {% assign raw_head = sensor.sensor_head | default: sensor.Sensor_Head %}
+        {% assign raw_location = sensor.location | default: sensor.Location %}
+        {% assign raw_build = sensor.build_notes | default: sensor.Build_Notes %}
+        {% assign raw_field = sensor.field_notes | default: sensor.Field_Notes %}
       <tr>
-        <td data-filter="{{ sensor.board }}" data-search="{{ sensor.board }}">
-          <strong>{{ sensor.board }}</strong>
+        <td data-filter="{{ raw_board }}" data-search="{{ raw_board }}">
+          <strong>{{ raw_board }}</strong>
         </td>
-        <td data-filter="{{ sensor.sensor_head }}" data-search="{{ sensor.sensor_head }}">
-          {{ sensor.sensor_head }}
+        <td data-filter="{{ raw_head }}" data-search="{{ raw_head }}">
+          {{ raw_head }}
         </td>
-        <td data-filter="{{ sensor.location }}" data-search="{{ sensor.location }}">
-          {{ sensor.location }}
+        <td data-filter="{{ raw_location }}" data-search="{{ raw_location }}">
+          {{ raw_location }}
         </td>
-        <td data-filter="{{ sensor.status }}" data-search="{{ sensor.status }}">
-          {% assign status_lower = sensor.status | downcase | strip %}
+        <td data-filter="{{ raw_status }}" data-search="{{ raw_status }}">
+          {% assign status_lower = raw_status | downcase | strip %}
           {% if status_lower == 'working' %}
             <span class="badge badge-working">Working</span>
           {% elsif status_lower == 'testing' %}
@@ -124,11 +130,11 @@ title: Sensor Inventory
           {% elsif status_lower == 'broken' %}
             <span class="badge badge-broken">Broken</span>
           {% else %}
-            <span class="badge badge-default">{{ sensor.status }}</span>
+            <span class="badge badge-default">{{ raw_status }}</span>
           {% endif %}
         </td>
-        <td>{{ sensor.build_notes }}</td>
-        <td>{{ sensor.field_notes }}</td>
+        <td>{{ raw_build }}</td>
+        <td>{{ raw_field }}</td>
       </tr>
       {% endfor %}
     </tbody>
@@ -146,26 +152,32 @@ $(document).ready(function() {
     }
   });
 
-  // Dynamically populate dropdown filters using data-filter attributes
+  // Extract plain text / data-filter attribute directly from cell DOM nodes
   function setupColumnFilter(columnIndex, selectId) {
-    var column = table.column(columnIndex);
     var select = $(selectId);
+    var uniqueValues = [];
 
-    // Extract unique cell strings from data-filter / data-search attributes
-    column.data().unique().sort().each(function(val) {
-      var cleanVal = $.trim(val);
-      if (cleanVal && select.find('option[value="' + cleanVal + '"]').length === 0) {
-        select.append('<option value="' + cleanVal + '">' + cleanVal + '</option>');
+    table.column(columnIndex).nodes().to$().each(function() {
+      var val = $(this).attr('data-filter') || $(this).text();
+      val = $.trim(val);
+      if (val && $.inArray(val, uniqueValues) === -1) {
+        uniqueValues.push(val);
       }
+    });
+
+    uniqueValues.sort();
+
+    $.each(uniqueValues, function(i, val) {
+      select.append('<option value="' + val + '">' + val + '</option>');
     });
 
     select.on('change', function() {
       var val = $.fn.dataTable.util.escapeRegex($(this).val());
-      column.search(val ? '^' + val + '$' : '', true, false).draw();
+      table.column(columnIndex).search(val ? '^' + val + '$' : '', true, false).draw();
     });
   }
 
-  // Bind columns to filters (0: Board, 1: Sensor Head, 2: Location, 3: Status)
+  // Bind dropdown filters (0: Board, 1: Sensor Head, 2: Location, 3: Status)
   setupColumnFilter(0, '#filter-board');
   setupColumnFilter(1, '#filter-sensorhead');
   setupColumnFilter(2, '#filter-location');
