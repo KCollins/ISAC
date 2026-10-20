@@ -1,0 +1,5 @@
+board,sensor_head,location,status,build_notes,field_notes
+v2.1-ESP32,SHT31-Temp,Roof Deck,Active,Soldered rev3 PCB with external antenna,Replaced solar panel mount on Oct 12
+v2.0-RP2040,BME280-Env,Lab Bench,Testing,Prototype assembly using standard header pins,Calibrated against reference unit
+v2.1-ESP32,SCD30-CO2,Field Station A,Maintenance,Custom 3D printed PETG enclosure,Power connector loose; resoldering needed
+v1.8-ESP8266,SHT31-Temp,Storage,Offline,Legacy revision board,Decommissioned for component harvesting
