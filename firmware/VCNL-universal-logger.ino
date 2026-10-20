@@ -23,14 +23,25 @@ uint16_t serialNumber = 0;
 uint32_t startEpoch = 0;
 unsigned long startMillis = 0;
 bool timeSynced = false;
-volatile bool fileCreated = false; // Prevents race conditions during file creation
+volatile bool fileCreated = false;
 char filename[13]; // Strictly 8.3 FAT filename buffer
 
 unsigned long lastLogTime = 0;
-const unsigned long LOG_INTERVAL = 100; // 100ms cadence (10 Hz)
+unsigned long LOG_INTERVAL = 100; // Logging cadence in ms (default: 100 ms = 10 Hz)
+uint16_t currentLedMa = 50;        // IR LED current in mA (default: 50 mA)
+char deploymentNotes[80] = "";     // Buffer for optional notes
 
-char rxBuffer[24];
+char rxBuffer[128]; // Expanded buffer for serial commands and note text
 byte rxIndex = 0;
+
+// Explicit Forward Function Prototypes
+void writeRegister8(uint8_t address, uint8_t reg, uint8_t val);
+void writeRegister16(uint8_t address, uint8_t reg, uint16_t val);
+uint8_t readRegister8(uint8_t address, uint8_t reg);
+uint16_t readRegister16_BE(uint8_t address, uint8_t reg);
+uint16_t readRegister16_LE(uint8_t address, uint8_t reg);
+void readVcnl4010OpenObs(uint16_t &proxOut, uint16_t &alsOut);
+void applyLedCurrent(uint16_t mA);
 
 void getModelName(uint8_t index, char* outBuf) {
   strcpy_P(outBuf, (char*)pgm_read_word(&(modelNames[index])));
@@ -54,7 +65,7 @@ void writeRegister16(uint8_t address, uint8_t reg, uint16_t val) {
 uint8_t readRegister8(uint8_t address, uint8_t reg) {
   Wire.beginTransmission(address);
   Wire.write(reg);
-  if (Wire.endTransmission(false) != 0) return 0;
+  if (Wire.endTransmission(true) != 0) return 0;
   Wire.requestFrom(address, (uint8_t)1);
   if (Wire.available() >= 1) {
     return Wire.read();
@@ -66,7 +77,7 @@ uint8_t readRegister8(uint8_t address, uint8_t reg) {
 uint16_t readRegister16_BE(uint8_t address, uint8_t reg) {
   Wire.beginTransmission(address);
   Wire.write(reg);
-  if (Wire.endTransmission(false) != 0) return 0;
+  if (Wire.endTransmission(true) != 0) return 0;
   Wire.requestFrom(address, (uint8_t)2);
   if (Wire.available() >= 2) {
     uint8_t high = Wire.read();
@@ -90,28 +101,55 @@ uint16_t readRegister16_LE(uint8_t address, uint8_t reg) {
   return 0;
 }
 
-// On-Demand Proximity Trigger for VCNL4010 / VCNL4020
-uint16_t readVcnl4010Proximity() {
-  writeRegister8(0x13, 0x80, 0x08); // Trigger On-Demand Proximity (prox_od)
-  for (uint8_t i = 0; i < 40; i++) {
-    delayMicroseconds(100);
-    if (readRegister8(0x13, 0x80) & 0x20) { // Check prox_data_ready
-      break;
-    }
+void applyLedCurrent(uint16_t mA) {
+  currentLedMa = mA;
+  if (detectedModel == MODEL_VCNL4010 || detectedModel == MODEL_VCNL4020) {
+    // VCNL4010/4020 Register 0x83: Current in 10 mA steps (0 to 20 -> 0 to 200 mA)
+    uint8_t val = mA / 10;
+    if (val > 20) val = 20;
+    writeRegister8(0x13, 0x83, val);
+  } else if (detectedModel == MODEL_VCNL4030 || detectedModel == MODEL_VCNL4040) {
+    // VCNL4030/4040 Register 0x03 PS_MS: Bits [2:0] set LED_I
+    uint8_t code = 0;
+    if (mA >= 200) code = 7;
+    else if (mA >= 180) code = 6;
+    else if (mA >= 160) code = 5;
+    else if (mA >= 140) code = 4;
+    else if (mA >= 120) code = 3;
+    else if (mA >= 100) code = 2;
+    else if (mA >= 70)  code = 1;
+    else code = 0; // 50 mA default
+
+    uint16_t currentReg = readRegister16_LE(0x60, 0x03);
+    currentReg = (currentReg & ~0x0007) | code;
+    writeRegister16(0x60, 0x03, currentReg);
   }
-  return readRegister16_BE(0x13, 0x87);
 }
 
-// On-Demand Ambient Light Trigger for VCNL4010 / VCNL4020
-uint16_t readVcnl4010ALS() {
-  writeRegister8(0x13, 0x80, 0x10); // Trigger On-Demand ALS (als_od)
-  for (uint8_t i = 0; i < 40; i++) {
+// OpenOBS Sequential Measurement Routine for VCNL4010 / VCNL4020
+void readVcnl4010OpenObs(uint16_t &proxOut, uint16_t &alsOut) {
+  // STEP 1: Ambient Light Measurement (ALS)
+  writeRegister8(0x13, 0x80, 0x10);
+  for (uint8_t i = 0; i < 200; i++) {
     delayMicroseconds(100);
-    if (readRegister8(0x13, 0x80) & 0x40) { // Check als_data_ready
+    if (readRegister8(0x13, 0x80) & 0x40) {
       break;
     }
   }
-  return readRegister16_BE(0x13, 0x85);
+  alsOut = readRegister16_BE(0x13, 0x85);
+
+  // STEP 2: Photodiode Settling delay
+  delayMicroseconds(2000);
+
+  // STEP 3: Backscatter / Proximity Measurement
+  writeRegister8(0x13, 0x80, 0x08);
+  for (uint8_t i = 0; i < 200; i++) {
+    delayMicroseconds(100);
+    if (readRegister8(0x13, 0x80) & 0x20) {
+      break;
+    }
+  }
+  proxOut = readRegister16_BE(0x13, 0x87);
 }
 
 void detectAndInitSensor() {
@@ -128,7 +166,8 @@ void detectAndInitSensor() {
     }
 
     writeRegister8(0x13, 0x80, 0x00); // Clear command register
-    writeRegister8(0x13, 0x83, 20);   // Set 200mA IR LED current
+    writeRegister8(0x13, 0x82, 0x02); // Proximity Rate: 14.14 measurements/s
+    applyLedCurrent(currentLedMa);     // Default LED Current (50 mA)
     writeRegister8(0x13, 0x84, 0x9D); // Fast ALS parameters
     return;
   }
@@ -146,6 +185,7 @@ void detectAndInitSensor() {
 
     writeRegister16(0x60, 0x03, 0x0000); // Power on Proximity
     writeRegister16(0x60, 0x00, 0x0000); // Power on ALS + White
+    applyLedCurrent(currentLedMa);     // Default LED Current (50 mA)
     return;
   }
 
@@ -183,7 +223,7 @@ void sendDeviceInfo() {
 }
 
 void createLogFile() {
-  fileCreated = false; // Stop loop writes immediately before closing handle
+  fileCreated = false;
   if (csvFile.isOpen()) {
     csvFile.close();
   }
@@ -212,6 +252,26 @@ void createLogFile() {
 
   if (csvFile.open(filename, FILE_WRITE)) {
     if (csvFile.fileSize() == 0) {
+      char modelStr[12];
+      getModelName(detectedModel, modelStr);
+
+      // Commented Header Section
+      csvFile.print(F("# OpenOBS Log File - Serial Number: "));
+      csvFile.println(serialNumber);
+      csvFile.print(F("# Sensor Model: "));
+      csvFile.println(modelStr);
+      csvFile.print(F("# Cadence: "));
+      csvFile.print(LOG_INTERVAL);
+      csvFile.println(F(" ms"));
+      csvFile.print(F("# LED Current: "));
+      csvFile.print(currentLedMa);
+      csvFile.println(F(" mA"));
+      if (strlen(deploymentNotes) > 0) {
+        csvFile.print(F("# Notes: "));
+        csvFile.println(deploymentNotes);
+      }
+
+      // CSV Data Column Headers
       if (detectedModel == MODEL_VCNL4010 || detectedModel == MODEL_VCNL4020) {
         csvFile.println(F("timestamp,millis,sensor_type,proximity,ambient_light"));
       } else {
@@ -251,12 +311,39 @@ void processCommand(char* input) {
     if (p_epoch > 1000000000UL) {
       startEpoch = p_epoch;
       startMillis = millis();
+      lastLogTime = startMillis;
       timeSynced = true;
       createLogFile();
     } else {
       Serial.println(F("MSG: Invalid epoch value received."));
       Serial.flush();
     }
+  } else if (strncmp(input, "NOTE:", 5) == 0) {
+    strncpy(deploymentNotes, input + 5, sizeof(deploymentNotes) - 1);
+    deploymentNotes[sizeof(deploymentNotes) - 1] = '\0';
+    Serial.println(F("ACK_NOTE:OK"));
+    Serial.flush();
+  } else if (strncmp(input, "SET_CFG:", 8) == 0) {
+    // Format: SET_CFG:<interval_ms>,<led_mA>
+    char* token = strtok(input + 8, ",");
+    if (token != NULL) {
+      unsigned long interval = strtoul(token, NULL, 10);
+      if (interval >= 20 && interval <= 60000) {
+        LOG_INTERVAL = interval;
+      }
+      token = strtok(NULL, ",");
+      if (token != NULL) {
+        uint16_t ledMa = atoi(token);
+        if (ledMa > 0 && ledMa <= 200) {
+          applyLedCurrent(ledMa);
+        }
+      }
+    }
+    Serial.print(F("ACK_CFG:"));
+    Serial.print(LOG_INTERVAL);
+    Serial.print(F(","));
+    Serial.println(currentLedMa);
+    Serial.flush();
   } else if (strcmp(input, "GET_SN") == 0) {
     sendDeviceInfo();
   }
@@ -302,9 +389,12 @@ void loop() {
 
   unsigned long currentMillis = millis();
   if (currentMillis - lastLogTime >= LOG_INTERVAL) {
-    lastLogTime = currentMillis;
+    if (currentMillis - lastLogTime > 5 * LOG_INTERVAL) {
+      lastLogTime = currentMillis;
+    } else {
+      lastLogTime += LOG_INTERVAL;
+    }
 
-    // Calculate sub-second high-precision timestamp for 10 Hz unique plotting
     double currentTimestamp = 0.0;
     if (timeSynced) {
       unsigned long elapsed = currentMillis - startMillis;
@@ -315,9 +405,8 @@ void loop() {
     float lux = 0.0;
 
     if (detectedModel == MODEL_VCNL4010 || detectedModel == MODEL_VCNL4020) {
-      prox = readVcnl4010Proximity(); // On-Demand Prox Trigger
-      als  = readVcnl4010ALS();       // On-Demand ALS Trigger
-      lux  = als;
+      readVcnl4010OpenObs(prox, als);
+      lux = als;
     } else if (detectedModel == MODEL_VCNL4030) {
       prox  = readRegister16_LE(0x60, 0x08);
       als   = readRegister16_LE(0x60, 0x0B);
@@ -333,16 +422,19 @@ void loop() {
     char modelStr[12];
     getModelName(detectedModel, modelStr);
 
-    // Stream CSV line over Serial with 3 decimal places for unique 10 Hz x-axis points
+    // Stream CSV line over Serial
     if (timeSynced) {
       Serial.print(currentTimestamp, 3);
     } else {
       Serial.print(0);
     }
     Serial.print(',');
-    Serial.print(currentMillis); Serial.print(',');
-    Serial.print(modelStr); Serial.print(',');
-    Serial.print(prox); Serial.print(',');
+    Serial.print(currentMillis);
+    Serial.print(',');
+    Serial.print(modelStr);
+    Serial.print(',');
+    Serial.print(prox);
+    Serial.print(',');
     if (detectedModel == MODEL_VCNL4010 || detectedModel == MODEL_VCNL4020) {
       Serial.println(als);
     } else {
@@ -351,7 +443,7 @@ void loop() {
       Serial.println(white);
     }
 
-    // Append CSV line to SD file
+    // Write to SD file
     if (fileCreated && csvFile.isOpen()) {
       if (timeSynced) {
         csvFile.print(currentTimestamp, 3);
@@ -359,19 +451,25 @@ void loop() {
         csvFile.print(0);
       }
       csvFile.print(',');
-      csvFile.print(currentMillis); csvFile.print(','); // FIXED: csvFile.print
-      csvFile.print(modelStr); csvFile.print(',');
-      csvFile.print(prox); csvFile.print(',');
+      csvFile.print(currentMillis);
+      csvFile.print(',');
+      csvFile.print(modelStr);
+      csvFile.print(',');
+      csvFile.print(prox);
+      csvFile.print(',');
       if (detectedModel == MODEL_VCNL4010 || detectedModel == MODEL_VCNL4020) {
         csvFile.println(als);
       } else {
-        csvFile.print(lux, 2); csvFile.print(',');
-        csvFile.print(als); csvFile.print(',');
+        csvFile.print(lux, 2);
+        csvFile.print(',');
+        csvFile.print(als);
+        csvFile.print(',');
         csvFile.println(white);
       }
       
-      static byte flushCounter = 0;
-      if (++flushCounter >= 50) { // Flush to SD card every 5 seconds at 10 Hz
+      // Flush every 200 cycles (~20 seconds at 10 Hz)
+      static uint16_t flushCounter = 0;
+      if (++flushCounter >= 200) {
         csvFile.flush();
         flushCounter = 0;
       }
