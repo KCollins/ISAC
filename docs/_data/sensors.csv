@@ -1,52 +1,52 @@
 board,sensor_head,location,status,build_notes,field_notes
-479,OpenOBS 4010,CA,Working,Ted's original board
-101,N/A,CA,Working,Test board for KF
-102,N/A,N/A,Broken,"Test board for KC (SD card holder is buggy, though)"
-103,OpenOBS 4010,CA,Working,
-104,OpenOBS 4010,CA,Working,
-105,OpenOBS 4010,CA,Working,
-106,N/A,N/A,Broken,ISP pins stripped. Board probably dead.
-107,OpenOBS 4010,CA,Working,
-108,OpenOBS 4010,CA,Working,Extra epoxy but no Loctite layer
-109,OpenOBS 4010,BW,Working,KC test sensor - gave to Matt and Elise of BW
-110,N/A,OH,Broken,"Board is buggy"
-111,N/A,OH,Broken,Initially installed battery holder backwards but now fixed. Testing for BW.
-112,OpenOBS 4010,CA,Working,
-113,OpenOBS 4010,CA,Working,Slight epoxy irregularity
-114,Adafruit 4010,CA,Working,
-115,OpenOBS 4010,CA,Working,
-116,N/A,OH,Broken,"Board is buggy - doesn't want to program and qwiic connector came off"
-117,N,OH,Working,
-118,N,OH,Broken,Qwiic may be buggy
-119,OpenOBS 4010,CA,Working,
-120,Adafruit 4010,CA,Working,
-121,OpenOBS 4010,CA,Working,
-122,N,OH,Working,
-123,OpenOBS 4010,CA,Working,"Green PETG head, Loctite layer","Used in ISAC2 and ISAC3"
-124,OpenOBS 4010,CA,Working,"Epoxy layer very thin on sensor head, more like conformal coat. Logs data but it looks like there's some noise in the ambient data. May make this one a fallback."
-125,N/A,CA,Broken,Dead ISP pins
-126,4010,CA,Working,
-127,4010,CA,Working,"Poor grip on 3D printed head. Has an epoxy slug."
-128,4010,CA,Working,
-129,4010,CA,Working,"Has an earlier head revision (V5)"
-130,4010,CA,Working,
-131,4010,CA,Working,
-132,4010,CA,Working,
-133,4010,CA,Testing,"KC test unit. Leaky head connection."
-134,4010,CA,Working,
-135,4010,CA,Working,
-136,4010,CA,Working,
-137,4010,CA,Working,
-138,4010,CA,Working,
-139,4010,CA,Working,
-140,4010,CA,Working,
-141,4020,CA,Testing,"Head glows green (forgot to remove power LED.) Use this one as a prop."
-142,,,Working,
-143,,,Maintenance,"Qwiic cable inside is too short! Needs F/F extension"
-144,,,Working,
-145,,,Working,
-146,,,Working,
-147,4010,,Working,
-148,,,Working,
-149,,,Working,
-150,,,Working,
+479,OpenOBS 4010,CA,Working,Ted's original board,
+101,N/A,CA,Working,Test board for KF,
+102,N/A,N/A,Broken,"Test board for KC (SD card holder is buggy, though)",
+103,OpenOBS 4010,CA,Working,,
+104,OpenOBS 4010,CA,Working,,
+105,OpenOBS 4010,CA,Working,,
+106,N/A,N/A,Broken,ISP pins stripped. Board probably dead.,
+107,OpenOBS 4010,CA,Working,,
+108,OpenOBS 4010,CA,Working,Extra epoxy but no Loctite layer,
+109,OpenOBS 4010,BW,Working,KC test sensor - gave to Matt and Elise of BW,
+110,N/A,OH,Broken,Board is buggy,
+111,N/A,OH,Broken,Initially installed battery holder backwards but now fixed. Testing for BW.,
+112,OpenOBS 4010,CA,Working,,
+113,OpenOBS 4010,CA,Working,Slight epoxy irregularity,
+114,Adafruit 4010,CA,Working,,
+115,OpenOBS 4010,CA,Working,,
+116,N/A,OH,Broken,"Board is buggy - doesn't want to program and qwiic connector came off",
+117,N,OH,Working,,
+118,N,OH,Broken,Qwiic may be buggy,
+119,OpenOBS 4010,CA,Working,,
+120,Adafruit 4010,CA,Working,,
+121,OpenOBS 4010,CA,Working,,
+122,N,OH,Working,,
+123,OpenOBS 4010,CA,Working,"Green PETG head, Loctite layer",Used in ISAC2 and ISAC3
+124,OpenOBS 4010,CA,Working,"Epoxy layer very thin on sensor head, more like conformal coat. Logs data but it looks like there's some noise in the ambient data. May make this one a fallback.",
+125,N/A,CA,Broken,Dead ISP pins,
+126,4010,CA,Working,,
+127,4010,CA,Working,"Poor grip on 3D printed head. Has an epoxy slug.",
+128,4010,CA,Working,,
+129,4010,CA,Working,Has an earlier head revision (V5),
+130,4010,CA,Working,,
+131,4010,CA,Working,,
+132,4010,CA,Working,,
+133,4010,CA,Testing,KC test unit. Leaky head connection.,
+134,4010,CA,Working,,
+135,4010,CA,Working,,
+136,4010,CA,Working,,
+137,4010,CA,Working,,
+138,4010,CA,Working,,
+139,4010,CA,Working,,
+140,4010,CA,Working,,
+141,4020,CA,Testing,"Head glows green (forgot to remove power LED.) Use this one as a prop.",
+142,,,Working,,
+143,,,Building,Qwiic cable inside is too short! Needs F/F extension,
+144,,,Working,,
+145,,,Working,,
+146,,,Working,,
+147,4010,,Working,,
+148,,,Working,,
+149,,,Working,,
+150,,,Working,,
