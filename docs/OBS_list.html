@@ -1,0 +1,156 @@
+---
+layout: default
+title: Sensor Inventory
+---
+
+<!-- DataTables CSS & JS Dependencies -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+<style>
+  .sensor-tracker-container {
+    margin: 20px 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  
+  /* Filter bar styling */
+  .filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 8px;
+  }
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .filter-group label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #57606a;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .filter-group select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #d0d7de;
+    background-color: #ffffff;
+    font-size: 14px;
+  }
+
+  /* Status Badges */
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
+  }
+  .badge-active { background-color: #dafbe1; color: #1a7f37; border: 1px solid #4ac26b; }
+  .badge-maintenance { background-color: #fff8c5; color: #9a6700; border: 1px solid #d4a72c; }
+  .badge-offline { background-color: #ffebe9; color: #cf222e; border: 1px solid #ff8182; }
+  .badge-testing { background-color: #ddf4ff; color: #0969da; border: 1px solid #54aeff; }
+  .badge-default { background-color: #f3f4f6; color: #57606a; border: 1px solid #d0d7de; }
+
+  table.dataTable tbody td {
+    vertical-align: top;
+    padding: 10px 8px;
+  }
+</style>
+
+<div class="sensor-tracker-container">
+  <h2>Sensor Inventory Tracker</h2>
+  
+  <!-- Interactive Dropdown Filters -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label for="filter-status">Status</label>
+      <select id="filter-status"><option value="">All Statuses</option></select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-location">Location</label>
+      <select id="filter-location"><option value="">All Locations</option></select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-board">Board</label>
+      <select id="filter-board"><option value="">All Boards</option></select>
+    </div>
+    <div class="filter-group">
+      <label for="filter-sensorhead">Sensor Head</label>
+      <select id="filter-sensorhead"><option value="">All Sensor Heads</option></select>
+    </div>
+  </div>
+
+  <!-- Main Table -->
+  <table id="sensorTable" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>Board</th>
+        <th>Sensor Head</th>
+        <th>Location</th>
+        <th>Status</th>
+        <th>Build Notes</th>
+        <th>Field Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for sensor in site.data.sensors %}
+      <tr>
+        <td><strong>{{ sensor.board }}</strong></td>
+        <td>{{ sensor.sensor_head }}</td>
+        <td>{{ sensor.location }}</td>
+        <td>
+          {% assign status_lower = sensor.status | downcase %}
+          {% if status_lower == 'active' %}
+            <span class="badge badge-active">Active</span>
+          {% elsif status_lower == 'maintenance' %}
+            <span class="badge badge-maintenance">Maintenance</span>
+          {% elsif status_lower == 'offline' %}
+            <span class="badge badge-offline">Offline</span>
+          {% elsif status_lower == 'testing' %}
+            <span class="badge badge-testing">Testing</span>
+          {% else %}
+            <span class="badge badge-default">{{ sensor.status }}</span>
+          {% endif %}
+        </td>
+        <td>{{ sensor.build_notes }}</td>
+        <td>{{ sensor.field_notes }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+$(document).ready(function() {
+  var table = $('#sensorTable').DataTable({
+    paging: true,
+    pageLength: 25,
+    order: [[0, 'asc']],
+    language: {
+      search: "Global Search:"
+    }
+  });
+
+  // Populate dynamic filter options from unique column values
+  function setupColumnFilter(columnIndex, selectId) {
+    var column = table.column(columnIndex);
+    var select = $(selectId);
+
+    column.data().unique().sort().each(function(d) {
+      // Clean HTML tags from status badges to populate plain option text
+      var cleanVal = $('<div>').html(d).text().trim();
+      if (cleanVal && select.find('option[value="' + cleanVal + '"]').length === 0) {
+        select.append('<option value="' + cleanVal + '">' + cleanVal + '</option>');
+      }
+    });
+
+    select.on('change', function() {
+      var val = $.fn.dataTable.util.escapeRegex($(this).val());
