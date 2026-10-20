@@ -14,7 +14,6 @@ title: Sensor Inventory
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   }
   
-  /* Filter bar styling */
   .filter-bar {
     display: flex;
     flex-wrap: wrap;
@@ -45,7 +44,7 @@ title: Sensor Inventory
     font-size: 14px;
   }
 
-  /* Status Badges */
+  /* Updated Status Badges */
   .badge {
     display: inline-block;
     padding: 3px 10px;
@@ -53,11 +52,11 @@ title: Sensor Inventory
     font-size: 0.85em;
     font-weight: 600;
   }
-  .badge-working { background-color: #dafbe1; color: #1a7f37; border: 1px solid #4ac26b; }
-  .badge-maintenance { background-color: #fff8c5; color: #9a6700; border: 1px solid #d4a72c; }
-  .badge-broken { background-color: #ffebe9; color: #cf222e; border: 1px solid #ff8182; }
-  .badge-testing { background-color: #ddf4ff; color: #0969da; border: 1px solid #54aeff; }
-  .badge-default { background-color: #f3f4f6; color: #57606a; border: 1px solid #d0d7de; }
+  .badge-working  { background-color: #dafbe1; color: #1a7f37; border: 1px solid #4ac26b; }
+  .badge-testing  { background-color: #ddf4ff; color: #0969da; border: 1px solid #54aeff; }
+  .badge-building { background-color: #fff8c5; color: #9a6700; border: 1px solid #d4a72c; }
+  .badge-broken   { background-color: #ffebe9; color: #cf222e; border: 1px solid #ff8182; }
+  .badge-default  { background-color: #f3f4f6; color: #57606a; border: 1px solid #d0d7de; }
 
   table.dataTable tbody td {
     vertical-align: top;
@@ -103,19 +102,19 @@ title: Sensor Inventory
     <tbody>
       {% for sensor in site.data.sensors %}
       <tr>
-        <td><strong>{{ sensor.board }}</strong></td>
-        <td>{{ sensor.sensor_head }}</td>
-        <td>{{ sensor.location }}</td>
-        <td>
+        <td data-search="{{ sensor.board }}"><strong>{{ sensor.board }}</strong></td>
+        <td data-search="{{ sensor.sensor_head }}">{{ sensor.sensor_head }}</td>
+        <td data-search="{{ sensor.location }}">{{ sensor.location }}</td>
+        <td data-search="{{ sensor.status }}">
           {% assign status_lower = sensor.status | downcase %}
-          {% if status_lower == 'Working' %}
+          {% if status_lower == 'working' %}
             <span class="badge badge-working">Working</span>
-          {% elsif status_lower == 'maintenance' %}
-            <span class="badge badge-maintenance">Maintenance</span>
-          {% elsif status_lower == 'broken' %}
-            <span class="badge badge-broken">Broken</span>
           {% elsif status_lower == 'testing' %}
             <span class="badge badge-testing">Testing</span>
+          {% elsif status_lower == 'building' %}
+            <span class="badge badge-building">Building</span>
+          {% elsif status_lower == 'broken' %}
+            <span class="badge badge-broken">Broken</span>
           {% else %}
             <span class="badge badge-default">{{ sensor.status }}</span>
           {% endif %}
@@ -139,18 +138,37 @@ $(document).ready(function() {
     }
   });
 
-  // Populate dynamic filter options from unique column values
   function setupColumnFilter(columnIndex, selectId) {
     var column = table.column(columnIndex);
     var select = $(selectId);
 
-    column.data().unique().sort().each(function(d) {
-      // Clean HTML tags from status badges to populate plain option text
-      var cleanVal = $('<div>').html(d).text().trim();
-      if (cleanVal && select.find('option[value="' + cleanVal + '"]').length === 0) {
-        select.append('<option value="' + cleanVal + '">' + cleanVal + '</option>');
+    // Extract values directly from data-search attributes
+    column.cells().nodes().to$().each(function() {
+      var val = $(this).attr('data-search') || $(this).text().trim();
+      if (val && select.find('option[value="' + val + '"]').length === 0) {
+        select.append('<option value="' + val + '">' + val + '</option>');
       }
     });
 
+    // Sort drop-down options alphabetically
+    var options = select.find('option').toArray().sort(function(a, b) {
+      if (a.value === "") return -1;
+      if (b.value === "") return 1;
+      return a.text.localeCompare(b.text);
+    });
+    select.empty().append(options);
+
+    // Perform exact string match filtering
     select.on('change', function() {
       var val = $.fn.dataTable.util.escapeRegex($(this).val());
+      column.search(val ? '^' + val + '$' : '', true, false).draw();
+    });
+  }
+
+  // Bind dropdown filters
+  setupColumnFilter(0, '#filter-board');       // Board
+  setupColumnFilter(1, '#filter-sensorhead');  // Sensor Head
+  setupColumnFilter(2, '#filter-location');    // Location
+  setupColumnFilter(3, '#filter-status');      // Status
+});
+</script>
