@@ -304,7 +304,7 @@
       if (line.startsWith("ACK_SYNC:")) {
         const payload = line.substring(9);
         const parts = payload.split(',');
-        const epoch = parseInt(parts[0]);
+        const epoch = parseFloat(parts[0]);
         const fileName = parts.length > 1 ? parts[1] : 'Active';
 
         if (parts.length > 2) {
@@ -338,7 +338,7 @@
       // Parse CSV Data Row: timestamp, millis, sensor_type, proximity, light, ...
       const parts = line.split(',');
       if (parts.length >= 5) {
-        const epoch = parseInt(parts[0]);
+        const epoch = parseFloat(parts[0]);
         const prox = parseFloat(parts[3]);
         const light = parseFloat(parts[4]);
 
