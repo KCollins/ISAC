@@ -176,7 +176,7 @@ void detectAndInitSensor() {
   Wire.beginTransmission(0x60);
   if (Wire.endTransmission() == 0) {
     uint16_t idCheck = readRegister16_LE(0x60, 0x0C);
-    
+   
     if ((idCheck & 0xFF) == 0x86) {
       detectedModel = MODEL_VCNL4040;
     } else {
@@ -367,7 +367,7 @@ void checkSerialInput() {
 void setup() {
   Serial.begin(57600);
   Wire.begin();
-  
+ 
   #if defined(WIRE_HAS_TIMEOUT)
     Wire.setWireTimeout(3000, true);
   #endif
@@ -395,11 +395,21 @@ void loop() {
       lastLogTime += LOG_INTERVAL;
     }
 
-    double currentTimestamp = 0.0;
-    if (timeSynced) {
-      unsigned long elapsed = currentMillis - startMillis;
-      currentTimestamp = (double)startEpoch + ((double)elapsed / 1000.0);
-    }
+    unsigned long elapsed = currentMillis - startMillis;
+    uint32_t currentSec = startEpoch + (elapsed / 1000UL);
+    uint16_t currentMs = elapsed % 1000UL;
+
+    auto printTimestamp = [&](Print &out) {
+      if (timeSynced) {
+        out.print(currentSec);
+        out.print('.');
+        if (currentMs < 100) out.print('0');
+        if (currentMs < 10)  out.print('0');
+        out.print(currentMs);
+      } else {
+        out.print(0);
+      }
+    };
 
     uint16_t prox = 0, als = 0, white = 0;
     float lux = 0.0;
@@ -422,12 +432,9 @@ void loop() {
     char modelStr[12];
     getModelName(detectedModel, modelStr);
 
-    // Stream CSV line over Serial
-    if (timeSynced) {
-      Serial.print(currentTimestamp, 3);
-    } else {
-      Serial.print(0);
-    }
+    // Stream CSV line over Serial, but only if it's connected
+  if (Serial) {
+    printTimestamp(Serial);
     Serial.print(',');
     Serial.print(currentMillis);
     Serial.print(',');
@@ -442,14 +449,11 @@ void loop() {
       Serial.print(als); Serial.print(',');
       Serial.println(white);
     }
+  }
 
     // Write to SD file
     if (fileCreated && csvFile.isOpen()) {
-      if (timeSynced) {
-        csvFile.print(currentTimestamp, 3);
-      } else {
-        csvFile.print(0);
-      }
+      printTimestamp(csvFile);
       csvFile.print(',');
       csvFile.print(currentMillis);
       csvFile.print(',');
@@ -466,7 +470,7 @@ void loop() {
         csvFile.print(',');
         csvFile.println(white);
       }
-      
+     
       // Flush every 200 cycles (~20 seconds at 10 Hz)
       static uint16_t flushCounter = 0;
       if (++flushCounter >= 200) {
