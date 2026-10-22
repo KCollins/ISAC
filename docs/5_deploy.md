@@ -36,6 +36,7 @@ This page contains deployment protocols.
 - [ ] ***(3D printed wrench)***
 - [ ] Zip ties
 - [ ] Teflon tape
+- [ ] Electrical tape
 - [ ] _Optional:_ Milk crate or bottle caddy to keep track of sensors.
 
 ## Sensor Deployment Protocol
@@ -46,7 +47,14 @@ This page contains deployment protocols.
 - [ ] Insert the 3.7V battery into the holder on the board. Unplug the USB cable; the TX light should keep blinking.
 - [ ] Gently insert the board back into the tube. Wrap the threaded insert in Teflon tape and tighten it with the 3D-printed wrench. **Do not overtighten!**
 - [ ] Refresh the HTML launch page before repeating the process for the next sensor.
-- [ ] Zip tie the sensor to the appropriate point in the column. 
+- [ ] Zip tie the sensor to the appropriate point in the column.
+
+# Recovery
+ - [ ] Use wrench to unscrew threaded insert. (If it's too tight, you may need to resort to a strap or pipe wrench; make sure to shield the PVC with a clean cloth in this case.) Check for water inside the housing. Update the table [here](_data/sensors.csv), which will be reflected in the [sensor inventory](https://kcollins.github.io/ISAC/OBS_list.html). If the sensor has failed, add details of when, where and how.
+ - [ ] Remove battery and return it to charger.
+ - [ ] Remove microSD card and put files into the [OBS_logs](../Data/OBS_logs) folder.
+ - [ ] Return the microSD card to the board.
+ - [ ] Run the Jupyter notebook [here](../Data/OBS_Reader.ipynb) to create plots of the data.
 
 ## Drogue Deployment Protocol
 ### Deployment
