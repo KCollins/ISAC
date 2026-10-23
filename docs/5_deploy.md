@@ -45,7 +45,7 @@ This page contains deployment protocols.
 - [ ] Enter a note in the text box (this will be recorded in the .CSV header) and make sure that the sampling cadence and LED power settings look good for your application. (Defaults: 100 ms, 200 mA.)
 - [ ] Hit "Sync Time and Start Log File." Check the serial window to make sure that the file is indeed logging; if there are issues your micro-SD card may not be properly formatted or seated. Make sure the UTC timestamp looks good and take note of the filename.
 - [ ] Insert the 3.7V battery into the holder on the board. Unplug the USB cable; the TX light should keep blinking.
-- [ ] Gently insert the board back into the tube. Wrap the threaded insert in Teflon tape and tighten it with the 3D-printed wrench. **Do not overtighten!**
+- [ ] Gently insert the board back into the tube. Wrap the threaded insert in Teflon tape and tighten it with the 3D-printed wrench. **Do not overtighten!** The Teflon tape is very important; without it, your sensor _will_ flood.
 - [ ] Refresh the HTML launch page before repeating the process for the next sensor.
 - [ ] Zip tie the sensor to the appropriate point in the column.
 
