@@ -49,4 +49,4 @@ board,sensor_head,location,status,build_notes,field_notes
 147,4010,OH,Building,,
 148,,OH,Building,,
 149,,OH,Building,,
-150,,OH,Testing,"KC test unit",
+150,4020,OH,Testing,"KC test unit. Head glows green. Flooded during a test run but still works, TX light is just burned out.",
