@@ -34,6 +34,7 @@ This page contains deployment protocols.
 - [ ] 3D printed wrench (if using threaded inserts)
 - [ ] strap wrench
 - [ ] ***(3D printed wrench)***
+- [ ] Desiccant packets (silica gel, e.g.)
 - [ ] Zip ties
 - [ ] Teflon tape
 - [ ] Electrical tape
@@ -46,6 +47,7 @@ This page contains deployment protocols.
 - [ ] Hit "Sync Time and Start Log File." Check the serial window to make sure that the file is indeed logging; if there are issues your micro-SD card may not be properly formatted or seated. Make sure the UTC timestamp looks good and take note of the filename.
 - [ ] Insert the 3.7V battery into the holder on the board. Unplug the USB cable; the TX light should keep blinking.
 - [ ] Gently insert the board back into the tube. Wrap the threaded insert in Teflon tape and tighten it with the 3D-printed wrench. **Do not overtighten!** The Teflon tape is very important; without it, your sensor _will_ flood.
+- [ ] Put one or two fresh desiccant packets into the tube next to the sensor. These won't do much for you if your sensor floods, but they should help soak up condensate from the inside of the sensor being warmer than the outside. 
 - [ ] Refresh the HTML launch page before repeating the process for the next sensor.
 - [ ] Zip tie the sensor to the appropriate point in the column.
 
