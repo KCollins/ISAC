@@ -52,7 +52,7 @@ This page contains deployment protocols.
 - [ ] Zip tie the sensor to the appropriate point in the column.
 
 # Recovery
- - [ ] Use wrench to unscrew threaded insert. (If it's too tight, you may need to resort to a strap or pipe wrench; make sure to shield the PVC with a clean cloth in this case.) Check for water inside the housing. Update the table [here](_data/sensors.csv), which will be reflected in the [sensor inventory](https://kcollins.github.io/ISAC/OBS_list.html). If the sensor has failed, add details of when, where and how.
+ - [ ] Use wrench to unscrew threaded insert. (If it's too tight, you may need to resort to a strap or pipe wrench; make sure to shield the PVC with a clean cloth in this case.) Check for water inside the housing. Update the table [here](https://github.com/KCollins/ISAC/blob/main/docs/_data/sensors.csv), which will be reflected in the [sensor inventory](https://kcollins.github.io/ISAC/OBS_list.html). If the sensor has failed, add details of when, where and how.
  - [ ] Remove battery and return it to charger.
  - [ ] Remove microSD card and put files into the [OBS_logs](../Data/OBS_logs) folder.
  - [ ] Return the microSD card to the board.
